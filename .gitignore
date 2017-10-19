@@ -1,0 +1,7 @@
+*.fits
+.DS*
+.idea
+catalogs/zspecs/
+images/
+oldcode/
+refactor_galaxy_evo/
