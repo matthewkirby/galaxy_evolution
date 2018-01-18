@@ -1,4 +1,4 @@
-from astropy.table import Table, vstack
+from astropy.table import Table, vstack, MaskedColumn
 from astropy.io import fits
 from astropy.coordinates import SkyCoord
 import numpy as np
@@ -20,10 +20,16 @@ def load_primus_data(masklist):
         zerr = hdu[0][3]
         zconf = hdu[0][4]
         zgood = hdu[0][5]
+        ra_spec = hdu[0][6]
+        dec_spec = hdu[0][7]
 
-        ttable = Table([ralist, declist, zlist, zerr, zconf, zgood],
-                       names=('ra', 'dec', 'zLDP', 'zLDPerr', 'Q', 'zLDP_good'))
+        ttable = Table([ralist, declist, zlist, zerr, zconf, zgood, ra_spec, dec_spec],
+                       names=('ra', 'dec', 'zLDP', 'zLDPerr', 'Q', 'zLDP_good', 'ra_slit', 'dec_slit'))
         primus_table = vstack([primus_table, ttable])
+
+    photpos = SkyCoord(ra=primus_table['ra']*u.degree, dec=primus_table['dec']*u.degree)
+    slitpos = SkyCoord(ra=primus_table['ra_slit']*u.degree, dec=primus_table['dec_slit']*u.degree)
+    primus_table['slit_distance'] = photpos.separation(slitpos).arcsecond
 
     primus_table.sort('ra')
     primus_table['uid'] = np.arange(0, len(primus_table['ra']), 1)
@@ -81,10 +87,11 @@ def main():
 
     # Load PRIMUS catalogs and build into astropy table
     primus_table = load_primus_data(masklist)
+    #primus_table['zSpec'] = MaskedColumn(-1.*np.ones(len(primus_table)), mask=True)
+    #primus_table['zSpec_quality'] = MaskedColumn(-1.*np.ones(len(primus_table)), mask=True)
     primus_table['zSpec'] = -1.
-    primus_table['zSpec_quality'] = -1
-    primus_table['z_match_distance'] = -1.
     primus_table['zSpec'].mask = True
+    primus_table['zSpec_quality'] = -1
     primus_table['zSpec_quality'].mask = True
 
     # Load zSpec catalog and build into astropy table
@@ -123,7 +130,9 @@ def main():
 
 
     print match1, match2, match2res
-    #primus_table.write('personal_catalogs/primus_fors2.fits', format='fits')
+    print primus_table[np.where(primus_table['uid'] == 590)][0]
+
+    primus_table.write('personal_catalogs/primus_fors2.csv', format='csv')
 
 
 if __name__ == "__main__":

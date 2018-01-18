@@ -5,3 +5,5 @@ catalogs/zspecs/
 images/
 oldcode/
 refactor_galaxy_evo/
+*.py
+ediscs_paper/

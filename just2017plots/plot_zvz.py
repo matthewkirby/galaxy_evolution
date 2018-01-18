@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import astropy.table as table
 from astropy.table import Table
 
 def find_histogram_edges(hist, bins):
@@ -16,13 +15,14 @@ def find_histogram_edges(hist, bins):
 def main():
     plt.rc('text', usetex=True)
 
-    primus_table = Table().read('../catalogs/personal_catalogs/primus_fors2.fits')
+    primus_table = Table().read('../catalogs/personal_catalogs/useable_catalog.csv', format='csv')
 
     # Make subtable with the appropriate cuts
     subtable = primus_table[np.where(primus_table['zSpec'] > 0.0)]
     subtable = subtable[np.where(subtable['zLDP_good'] == 1)]
-    subtable = subtable[np.where(subtable['zSpec_quality'] == 1)]
+    subtable = subtable[np.where(subtable['zSpec_Q'] == 1)]
     subtable = subtable[np.where(subtable['zLDP'] < 0.85)]
+    subtable = subtable[np.where(subtable['slit_distance'] < 0.5)]
 
     # Calculate delta-z for each object in subtable
     subtable['dz'] = subtable['zLDP'] - subtable['zSpec']
@@ -78,11 +78,14 @@ def main():
     a3.set_ylabel(r'$\log_{10}(N)$')
     a4.set_xlabel(r'$z_{spec}$')
     a5.set_xlabel(r'$\Delta z = |z_{LDP} - z_{spec}|$')
+    #plt.show()
     plt.savefig('../just2017plots/zvz.png', dpi=300)
 
-    #print len(primus_table[np.where(primus_table['Q'] >= 2)])
+    print 'Q=4 objs:', len(primus_table[np.where(primus_table['Q'] == 4)])
 
-
+    # Calculate the dispersions
+    print len(Q4)
+    print np.sum(Q4['dz']**2)/len(Q4['dz'])
 
 
 
