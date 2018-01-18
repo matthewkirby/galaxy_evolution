@@ -4,6 +4,5 @@
 catalogs/zspecs/
 images/
 oldcode/
-refactor_galaxy_evo/
-*.py
+*.png
 ediscs_paper/
