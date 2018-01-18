@@ -5,4 +5,7 @@ catalogs/zspecs/
 images/
 oldcode/
 *.png
+*.zip
 ediscs_paper/
+*.txt
+*.csv

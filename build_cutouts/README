@@ -1,0 +1,21 @@
+TODO
+
+ACS 606W: jc8hXX010
+ACS 814W: jc8hXX020
+UVIS 606W: ic8hXX030
+UVIS 814W: ic8hXX040
+
+- Write script to streamline
+- Determine which objects in catalog are imaged in LDP
+    1. Only include objects that have zLDP
+    2. Compile a list of RA and DEC of every object
+    3. Pass this into wcstran to convert to image pixel value
+    4. Remove objects that are outside of the acceptable range
+        - UVIS: 0 < x < 4136, 0 < y < 4394
+        - ACS : 0 < x < 4222, 0 < y < 4244
+        - Need 100 pixels in the image
+    5. This can then be compared to files located in galaxy_evolution/old/galaxy_evolution/cutCatalog/pixelCoords
+- Make cutouts
+- Rewrite classification script
+    - Should be written in a way that makes combining the results much easier
+
