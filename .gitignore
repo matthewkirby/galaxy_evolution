@@ -14,3 +14,10 @@ classification_code/
 .ipynb_checkpoints
 __pycache__
 old_stuff
+
+build_table_for_anja.py
+personal_catalogs/
+slit_masks_dj/
+slit_masks_targetting/
+spectables_greg/
+morphology_analysis/
