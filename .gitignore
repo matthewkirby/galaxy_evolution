@@ -9,3 +9,7 @@ oldcode/
 ediscs_paper/
 *.txt
 *.csv
+classification_code/
+*.eps
+.ipynb_checkpoints
+__pycache__
