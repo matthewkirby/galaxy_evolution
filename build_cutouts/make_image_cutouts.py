@@ -1,13 +1,15 @@
 import numpy as np
 from astropy.nddata import Cutout2D
-import matplotlib.pyplot as plt
 from astropy.io import fits
+from astropy.table import Table
 
 
 def load_centers(fname):
     # Determine which detector we are using for pixel ranges
-    if fname[0] == 'i': instrument = 'UVIS'
-    elif fname[0] == 'j': instrument = 'ACS'
+    if fname[0] == 'i':
+        instrument = 'UVIS'
+    elif fname[0] == 'j':
+        instrument = 'ACS'
 
     number = fname[4:6]
     if fname[7] in ['1', '3']:
@@ -15,45 +17,41 @@ def load_centers(fname):
     elif fname[7] in ['2', '4']:
         opt_filter = 'F814W'
 
-    outname = instrument + '_mask' + number + '_' + opt_filter + '.txt'
-    x, y = np.loadtxt('cut_ldp_catalog/object_pixel_locations/'+outname, unpack=True)
+    outname = instrument + '_mask' + number + '_' + opt_filter + '.csv'
+    data = Table().read('cut_ldp_catalog/object_pixel_locations/'+outname, format='csv')
 
-    details = {'instrument': instrument, 'mask': number, 'filter': opt_filter}
-
-    return zip(x, y), details
+    return data
 
 
 def main():
-    Ncutout = 0
+    ncutout = 0
+
+    # Load the list of images
+    imagelist = np.loadtxt('../images/image_list.dat', dtype=str)
+
     # Load image
-    fname = 'ic8h01030_drz.fits'
-    image = fits.open('../images/'+fname)[1].data
+    for fname in imagelist:
+        image = fits.open('../images/'+fname)[1].data
 
-    # Load coords
-    coords, details = load_centers(fname)
+        # Load coords
+        coordcat = load_centers(fname)
 
-    # Make cutout
+        # Make cutout
+        for row in coordcat:
+            print "Building cutout #%i" % ncutout
+            # Build the header
+            hdr = fits.Header()
+            hdr['filename'] = fname
+            hdr['ra'] = row['ra']
+            hdr['dec'] = row['dec']
+            hdr['field'] = row['field']
+            hdr['Q'] = row['Q']
+            hdr['Rauto'] = row['Rauto']
 
-    for coord in coords:
-        # Build the header
-        hdr = fits.Header()
-        hdr['filename'] = fname
-        hdr['instrmnt'] = details['instrument']
-        hdr['mask'] = details['mask']
-        hdr['filter'] = details['filter']
+            cutout = Cutout2D(image, [row['xcoord'], row['ycoord']], (200,200))
 
-        cutout = Cutout2D(image, coord, (100,100))
-
-        fits.PrimaryHDU(cutout.data, header=hdr).writeto('cutouts/cutout%i.fits' % Ncutout, overwrite=True)
-        Ncutout += 1
-
-
-
-
-
-
-
-
+            fits.PrimaryHDU(cutout.data, header=hdr).writeto('cutouts/cutout%i.fits' % ncutout, overwrite=True)
+            ncutout += 1
 
 
 if __name__ == '__main__':
