@@ -1,4 +1,5 @@
 from astropy.table import Table, vstack
+import matplotlib.pyplot as plt
 
 cname_list = ['cl1018_catalog_v7.0.fits',
               'cl1037_catalog_v7.0.fits',
