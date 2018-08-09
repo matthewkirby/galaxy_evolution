@@ -1,3 +1,5 @@
+# DJRemote/completeness/speccomplete/comp6.pro
+
 import matplotlib
 matplotlib.use('TkAgg')
 import numpy as np
@@ -15,17 +17,6 @@ def find_histogram_edges(hist, bins):
 
 
 def main():
-    allslits = Table().read('../catalogs/Masks/design/ediscs_cl1018_12/masks/mar09/ediscs_cl1018_12_slits_0260.fits')
-    slits = allslits[np.where(allslits['EDISCS'] == 1)]
-
-    print "Ediscs", len(allslits[np.where(allslits['EDISCS'] == 1)])
-    print "Sky", len(allslits[np.where(allslits['SKY'] == 1)])
-    print "All", len(allslits)
-
-
-
-
-    return
     #plt.rc('text', usetex=True)
 
     # Open and prepare the table

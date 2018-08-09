@@ -15,7 +15,7 @@ def find_histogram_edges(hist, bins):
 def main():
     plt.rc('text', usetex=True)
 
-    primus_table = Table().read('../catalogs/personal_catalogs/useable_catalog.csv', format='csv')
+    primus_table = Table().read('../catalogs/personal_catalogs/slits_phot_zs.csv', format='csv')
 
     # Make subtable with the appropriate cuts
     subtable = primus_table[np.where(primus_table['zSpec'] > 0.0)]
@@ -79,7 +79,7 @@ def main():
     a4.set_xlabel(r'$z_{spec}$')
     a5.set_xlabel(r'$\Delta z = |z_{LDP} - z_{spec}|$')
     #plt.show()
-    plt.savefig('../just2017plots/zvz.png', dpi=300)
+    plt.savefig('plots/zvz.eps', dpi=300)
 
     print 'Q=4 objs:', len(primus_table[np.where(primus_table['Q'] == 4)])
 

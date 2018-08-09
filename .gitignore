@@ -13,3 +13,4 @@ classification_code/
 *.eps
 .ipynb_checkpoints
 __pycache__
+old_stuff
