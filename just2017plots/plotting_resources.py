@@ -31,11 +31,8 @@ def average_error(n, s=1.0):
 
 def load_clusters():
     with open('../catalogs/personal_catalogs/cluster_info.dat') as fin:
-        data = fin.readlines()[1:]
-
-    # Load the color-magnitude relation table
-    cmrtable = Table().read('../catalogs/personal_catalogs/cluster_cmr.dat', format='csv')
-
+        data = fin.readlines()[1:]        
+        
     # Load the cluster data
     data = [row.split() for row in data]
     cllist = [{'tablename': row[1], 'papername': row[2],
@@ -45,6 +42,13 @@ def load_clusters():
                'rinfall': float(row[12]), 'D_A': float(row[13])}
               for row in data]
     cltable = Table(cllist)
+    
+    # Load the color-magnitude relation table
+    try:
+        cmrtable = Table().read('../catalogs/personal_catalogs/cluster_cmr.dat', format='csv')
+    except FileNotFoundError:
+        print("FAILED TO LOAD CLUSTER CMR")
+        return cltable
     
     # Merge the two
     cltable = join(cllist, cmrtable, keys='papername')
